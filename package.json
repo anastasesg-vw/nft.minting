@@ -7,7 +7,12 @@
     "packages/**"
   ],
   "scripts": {
+    "deploy": "concurrently --kill-others-on-fail \"yarn build\" \"yarn workspace frontend deploy\"",
+    "build": "concurrently --kill-others-on-fail \"yarn workspace contracts build\" \"yarn workspace frontend build\"",
     "test": "yarn workspace contracts test"
+  },
+  "dependencies": {
+    "concurrently": "^7.2.1"
   },
   "author": "Anastases Giannikopoulos",
   "license": "ISC",

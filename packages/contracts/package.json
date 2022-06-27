@@ -10,9 +10,10 @@
     "dev": "concurrently --kill-others-on-fail \"yarn workspace contracts run server\" \"yarn workspace contracts run localhost\"",
     "server": "npx hardhat node",
     "test": "npx hardhat test",
+    "build": "concurrently --kill-others-on-fail \"yarn workspace contracts run compile\" \"yarn workspace contracts run whitelist\"",
+    "compile": "npx hardhat typechain",
+    "whitelist": "node ./scripts/sign.mjs",
     "localhost": "npx hardhat run scripts/deploy.ts --network localhost",
-    "rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby",
-    "goerli": "npx hardhat run scripts/deploy.ts --network goerli",
     "mainnet": "npx hardhat run scripts/deploy.ts --network mainnet"
   },
   "devDependencies": {
