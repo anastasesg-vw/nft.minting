@@ -7,7 +7,7 @@
     "packages/**"
   ],
   "scripts": {
-    "deploy": "yarn workspace frontend netlify deploy",
+    "deploy": "yarn workspace frontend deploy",
     "build": "concurrently --kill-others-on-fail \"yarn workspace contracts build\" \"yarn workspace frontend build\"",
     "test": "yarn workspace contracts test"
   },
