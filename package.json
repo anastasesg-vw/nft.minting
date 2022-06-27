@@ -1,0 +1,15 @@
+{
+  "name": "nft.minting",
+  "version": "1.0.0",
+  "description": "A generic NFT minting project",
+  "main": "",
+  "workspaces": [
+    "packages/**"
+  ],
+  "scripts": {
+    "test": "yarn workspace contracts test"
+  },
+  "author": "Anastases Giannikopoulos",
+  "license": "ISC",
+  "private": true
+}
