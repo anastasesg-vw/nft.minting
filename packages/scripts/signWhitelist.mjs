@@ -1,7 +1,7 @@
 import fs from "fs";
 import * as dotenv from "dotenv";
 import { ethers, Wallet } from "ethers";
-import whitelist from "../config/whitelist.json" assert { type: "json" };
+import whitelist from "../config/whitelist.example.json" assert { type: "json" };
 dotenv.config();
 
 async function main() {
@@ -14,8 +14,8 @@ async function main() {
       console.log(account);
       const signature = await wallet.signMessage(
         ethers.utils.arrayify(
-          `0x000000000000000000000000${account.substring(2)}`
-        )
+          `0x000000000000000000000000${account.substring(2)}`,
+        ),
       );
       console.log(`Signing ${account} :: ${signature}`);
 
@@ -27,14 +27,14 @@ async function main() {
   fs.writeFileSync(
     "../frontend/config/signatures.json",
     JSON.stringify(signedMessages, null, 2),
-    "utf8"
+    "utf8",
   );
 }
 
 main()
   .then(() => {
     console.log(
-      "Signatures exported to packages/frontend/config/signatures.json"
+      "Signatures exported to packages/frontend/config/signatures.json",
     );
   })
   .catch((e) => {

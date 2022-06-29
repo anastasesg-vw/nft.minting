@@ -32,7 +32,7 @@ contract GenericContract is Ownable, ERC721A, ReentrancyGuard {
     uint256 public puSaleTime;
     uint256 public revealTime;
 
-    address public passwordSigner;
+    address private passwordSigner;
 
     constructor(
         uint256 _maxSupply,

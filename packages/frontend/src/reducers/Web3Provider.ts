@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { GenericContract } from '../contracts';
 
 export type Web3ProviderState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -6,6 +7,7 @@ export type Web3ProviderState = {
   web3Provider: ethers.providers.Web3Provider | null | undefined;
   address: string | null | undefined;
   network: ethers.providers.Network | null | undefined;
+  contract: GenericContract | null | undefined;
   connect: (() => Promise<void>) | null;
   disconnect: (() => Promise<void>) | null;
 };
@@ -15,6 +17,7 @@ export const web3InitialState: Web3ProviderState = {
   web3Provider: null,
   address: null,
   network: null,
+  contract: null,
   connect: null,
   disconnect: null,
 };
@@ -26,6 +29,7 @@ export type Web3Action =
       web3Provider?: Web3ProviderState['web3Provider'];
       address?: Web3ProviderState['address'];
       network?: Web3ProviderState['network'];
+      contract?: Web3ProviderState['contract'];
     }
   | {
       type: 'SET_ADDRESS';
@@ -51,6 +55,7 @@ export function web3Reducer(
         web3Provider: action.web3Provider,
         address: action.address,
         network: action.network,
+        contract: action.contract,
       };
     case 'SET_ADDRESS':
       return {

@@ -10,9 +10,8 @@
     "dev": "concurrently --kill-others-on-fail \"yarn workspace contracts run server\" \"yarn workspace contracts run localhost\"",
     "server": "npx hardhat node",
     "test": "npx hardhat test",
-    "build": "concurrently --kill-others-on-fail \"yarn workspace contracts run compile\" \"yarn workspace contracts run whitelist\"",
+    "build": "yarn workspace contracts run compile",
     "compile": "npx hardhat typechain",
-    "whitelist": "node ./scripts/sign.mjs",
     "localhost": "npx hardhat run scripts/deploy.ts --network localhost",
     "mainnet": "npx hardhat run scripts/deploy.ts --network mainnet"
   },

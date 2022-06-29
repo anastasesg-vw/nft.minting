@@ -11,6 +11,7 @@ import {
 } from '../reducers';
 
 import { toast } from 'react-toastify';
+import { GenericContract__factory } from '../contracts';
 
 const providerOptions = {
   walletconnect: {
@@ -32,7 +33,7 @@ if (typeof window !== 'undefined') {
 
 export const useWeb3 = () => {
   const [state, dispatch] = useReducer(web3Reducer, web3InitialState);
-  const { provider, web3Provider, address, network } = state;
+  const { provider, web3Provider, address, network, contract } = state;
 
   const connect = useCallback(async () => {
     if (web3Modal) {
@@ -42,6 +43,11 @@ export const useWeb3 = () => {
         const signer = web3Provider.getSigner();
         const address = await signer.getAddress();
         const network = await web3Provider.getNetwork();
+        const contract = GenericContract__factory.connect(
+          process.env.PUBLIC_ADDRESS ?? '',
+          web3Provider?.getSigner() ??
+            new ethers.providers.Web3Provider(window.ethereum).getSigner(),
+        );
 
         toast.success('Connected to Web3');
 
@@ -51,6 +57,7 @@ export const useWeb3 = () => {
           web3Provider,
           address,
           network,
+          contract,
         } as Web3Action);
       } catch (error) {
         if (error instanceof Error) {
@@ -132,6 +139,7 @@ export const useWeb3 = () => {
     web3Provider,
     address,
     network,
+    contract,
     connect,
     disconnect,
   } as Web3ProviderState;

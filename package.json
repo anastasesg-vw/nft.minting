@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "deploy": "concurrently --kill-others-on-fail \"yarn workspace contracts build\" \"yarn workspace frontend build\"",
+    "dev:contracts": "yarn workspace contracts dev",
+    "dev:frontend": "yarn workspace frontend dev",
     "test": "yarn workspace contracts test"
   },
   "dependencies": {

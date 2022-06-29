@@ -41,7 +41,6 @@ export interface GenericContractInterface extends utils.Interface {
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "passwordSigner()": FunctionFragment;
     "prSaleTime()": FunctionFragment;
     "preSaleMint(uint256,bytes)": FunctionFragment;
     "preSalePrice()": FunctionFragment;
@@ -85,7 +84,6 @@ export interface GenericContractInterface extends utils.Interface {
       | "name"
       | "owner"
       | "ownerOf"
-      | "passwordSigner"
       | "prSaleTime"
       | "preSaleMint"
       | "preSalePrice"
@@ -147,10 +145,6 @@ export interface GenericContractInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "passwordSigner",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "prSaleTime",
@@ -295,10 +289,6 @@ export interface GenericContractInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "passwordSigner",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "prSaleTime", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "preSaleMint",
@@ -519,8 +509,6 @@ export interface GenericContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    passwordSigner(overrides?: CallOverrides): Promise<[string]>;
-
     prSaleTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     preSaleMint(
@@ -689,8 +677,6 @@ export interface GenericContract extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  passwordSigner(overrides?: CallOverrides): Promise<string>;
-
   prSaleTime(overrides?: CallOverrides): Promise<BigNumber>;
 
   preSaleMint(
@@ -858,8 +844,6 @@ export interface GenericContract extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    passwordSigner(overrides?: CallOverrides): Promise<string>;
 
     prSaleTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1072,8 +1056,6 @@ export interface GenericContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    passwordSigner(overrides?: CallOverrides): Promise<BigNumber>;
-
     prSaleTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     preSaleMint(
@@ -1242,8 +1224,6 @@ export interface GenericContract extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    passwordSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     prSaleTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
