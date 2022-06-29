@@ -231,7 +231,7 @@ describe("Generic contract public sale transactions", function () {
     const sender = accounts[1];
 
     await contract.connect(sender).pubSaleMint(1, {
-      value: (await contract.preSalePrice()) * 1,
+      value: `${(await contract.pubSalePrice()) * 1}`,
     });
   });
 });
