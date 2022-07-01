@@ -85,6 +85,11 @@ contract GenericContract is Ownable, ERC721A, ReentrancyGuard {
         _safeMint(msg.sender, amount);
     }
 
+    function withdraw() external onlyOwner nonReentrant {
+        (bool success, ) = msg.sender.call{value: address(this).balance}("");
+        require(success, "Transfer failed.");
+    }
+
     /* Utils */
     function isWhitelisted(address user, bytes memory signature)
         public
