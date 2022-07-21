@@ -11,7 +11,11 @@ import {
 } from '../reducers';
 
 import { toast } from 'react-toastify';
-import { GenericContract__factory } from '../contracts';
+import {
+  GenericContract__factory,
+  GenericStaker__factory,
+  GenericToken__factory,
+} from '../contracts';
 
 const providerOptions = {
   walletconnect: {
@@ -33,7 +37,8 @@ if (typeof window !== 'undefined') {
 
 export const useWeb3 = () => {
   const [state, dispatch] = useReducer(web3Reducer, web3InitialState);
-  const { provider, web3Provider, address, network, contract } = state;
+  const { provider, web3Provider, address, network, nft, token, staker } =
+    state;
 
   const connect = useCallback(async () => {
     if (web3Modal) {
@@ -43,8 +48,18 @@ export const useWeb3 = () => {
         const signer = web3Provider.getSigner();
         const address = await signer.getAddress();
         const network = await web3Provider.getNetwork();
-        const contract = GenericContract__factory.connect(
-          process.env.PUBLIC_ADDRESS ?? '',
+        const nft = GenericContract__factory.connect(
+          process.env.NFT_PUBLIC_ADDRESS ?? '',
+          web3Provider?.getSigner() ??
+            new ethers.providers.Web3Provider(window.ethereum).getSigner(),
+        );
+        const token = GenericToken__factory.connect(
+          process.env.TKN_PUBLIC_ADDRESS ?? '',
+          web3Provider?.getSigner() ??
+            new ethers.providers.Web3Provider(window.ethereum).getSigner(),
+        );
+        const staker = GenericStaker__factory.connect(
+          process.env.STK_PUBLIC_ADDRESS ?? '',
           web3Provider?.getSigner() ??
             new ethers.providers.Web3Provider(window.ethereum).getSigner(),
         );
@@ -57,7 +72,9 @@ export const useWeb3 = () => {
           web3Provider,
           address,
           network,
-          contract,
+          nft,
+          token,
+          staker,
         } as Web3Action);
       } catch (error) {
         if (error instanceof Error) {
@@ -139,7 +156,9 @@ export const useWeb3 = () => {
     web3Provider,
     address,
     network,
-    contract,
+    nft,
+    token,
+    staker,
     connect,
     disconnect,
   } as Web3ProviderState;

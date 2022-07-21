@@ -1,26 +1,42 @@
+import moment from 'moment';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useWeb3Context } from '../src/context';
-import moment, { min } from 'moment';
 import signatures from '../config/signatures.example.json';
+import { useWeb3Context } from '../src/context';
+import axios from 'axios';
+
+interface Token {
+  dna: string;
+  name: string;
+  description: string;
+  image: string;
+  edition: number;
+  date: Date;
+  attributes: {
+    trait_type: string;
+    value: string;
+  }[];
+  compiler: string;
+}
 
 const Home: NextPage = () => {
-  const { web3Provider, address, contract, connect, disconnect } =
-    useWeb3Context();
-  const [count, setCount] = useState<number>(1);
+  const { web3Provider, address, nft, connect, disconnect } = useWeb3Context();
+  // const [count, setCount] = useState<number>(1);
   const [preSaleDateTime, setPreSaleDateTime] = useState<Date | null>();
   const [publicSaleDateTime, setPublicSaleDateTime] = useState<Date | null>();
+  const [tokens, setTokens] = useState<Token[]>([]);
 
   useEffect(() => {
-    if (contract) {
+    if (nft) {
       const getPreSaleTime = async () => {
-        return await contract.prSaleTime();
+        return await nft.prSaleTime();
       };
 
       const getPublicSaleTime = async () => {
-        return await contract.puSaleTime();
+        return await nft.puSaleTime();
       };
 
       getPublicSaleTime().then((time) => {
@@ -31,10 +47,38 @@ const Home: NextPage = () => {
         setPreSaleDateTime(new Date(time.toNumber() * 1000));
       });
     }
-  }, [contract]);
+  }, [nft]);
+
+  useEffect(() => {
+    if (web3Provider && nft && address) {
+      const getTokens = async () => {
+        const tkns: Token[] = [];
+        for (let index = 0; index < 80; index++) {
+          if (await nft.ownerOf(index + 1)) {
+            const tokenUri = await nft.tokenURI(index + 1);
+            const url = `https://ipfs.io/ipfs/${tokenUri.replace(
+              'ipfs://',
+              '',
+            )}`;
+            tkns[index] = (await axios.get<Token>(url)).data;
+            tkns[index].image = `https://ipfs.io/ipfs/${tkns[
+              index
+            ].image.replace('ipfs://', '')}`;
+          }
+        }
+
+        console.log(tkns);
+        return tkns;
+      };
+
+      getTokens().then((response) => {
+        setTokens(response);
+      });
+    }
+  }, [web3Provider, nft, address]);
 
   const onMintClick = async () => {
-    if (web3Provider && contract && address) {
+    if (web3Provider && nft && address) {
       let signature: string = signatures.hasOwnProperty(address)
         ? signatures[address.toLowerCase()]
         : signatures['default'];
@@ -43,18 +87,18 @@ const Home: NextPage = () => {
         moment.utc().isAfter(preSaleDateTime) &&
         moment.utc().isBefore(publicSaleDateTime) &&
         address
-          ? contract.preSaleMint(amount, signature, {
+          ? nft.preSaleMint(amount, signature, {
               value: (
-                (await contract.preSalePrice()).toNumber() * amount
+                (await nft.preSalePrice()).toNumber() * amount
               ).toString(),
             })
-          : contract.pubSaleMint(amount, {
+          : nft.pubSaleMint(amount, {
               value: (
-                (await contract.pubSalePrice()).toNumber() * amount
+                (await nft.pubSalePrice()).toNumber() * amount
               ).toString(),
             });
 
-      mint(count).catch((e: any) => {
+      mint(100).catch((e: any) => {
         let error: string = '';
 
         if (e.message) {
@@ -116,6 +160,20 @@ const Home: NextPage = () => {
           <button type="button" onClick={onMintClick}>
             Mint
           </button>
+          <div className="grid grid-cols-4">
+            {tokens.map((token) => {
+              return (
+                <div className="p-4">
+                  <img
+                    src={token.image}
+                    width={100}
+                    height={100}
+                    key={token.name}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </main>
         <footer></footer>
       </div>

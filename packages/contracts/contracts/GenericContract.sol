@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
-import "./ERC721A.sol";
+import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -15,6 +15,7 @@ error ExceedMaxAmount();
 error ExceedMaxSupply();
 error ValueTooLow();
 error NotWhitelisted();
+error NotTokenOwner();
 
 contract GenericContract is Ownable, ERC721A, ReentrancyGuard {
     using Strings for uint256;
@@ -131,6 +132,11 @@ contract GenericContract is Ownable, ERC721A, ReentrancyGuard {
             s := mload(add(sig, 64))
             v := byte(0, mload(add(sig, 96)))
         }
+    }
+
+    function burnToken(uint tokenId) public {
+        if(msg.sender != ownerOf(tokenId)) revert NotTokenOwner();
+        _burn(tokenId);
     }
 
     /* Getters */

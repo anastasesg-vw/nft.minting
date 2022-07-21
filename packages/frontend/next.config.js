@@ -6,7 +6,9 @@ const nextConfig = {
   },
   env: {
     INFURA_ID: process.env.INFURA_ID,
-    PUBLIC_ADDRESS: process.env.PUBLIC_ADDRESS,
+    NFT_PUBLIC_ADDRESS: process.env.NFT_PUBLIC_ADDRESS,
+    TKN_PUBLIC_ADDRESS: process.env.TKN_PUBLIC_ADDRESS,
+    STK_PUBLIC_ADDRESS: process.env.STK_PUBLIC_ADDRESS,
   },
   images: {
     domains: ['localhost'],
