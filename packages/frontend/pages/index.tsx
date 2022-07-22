@@ -1,33 +1,15 @@
 import moment from 'moment';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import signatures from '../config/signatures.example.json';
 import { useWeb3Context } from '../src/context';
-import axios from 'axios';
-
-interface Token {
-  dna: string;
-  name: string;
-  description: string;
-  image: string;
-  edition: number;
-  date: Date;
-  attributes: {
-    trait_type: string;
-    value: string;
-  }[];
-  compiler: string;
-}
 
 const Home: NextPage = () => {
   const { web3Provider, address, nft, connect, disconnect } = useWeb3Context();
-  // const [count, setCount] = useState<number>(1);
   const [preSaleDateTime, setPreSaleDateTime] = useState<Date | null>();
   const [publicSaleDateTime, setPublicSaleDateTime] = useState<Date | null>();
-  const [tokens, setTokens] = useState<Token[]>([]);
 
   useEffect(() => {
     if (nft) {
@@ -48,34 +30,6 @@ const Home: NextPage = () => {
       });
     }
   }, [nft]);
-
-  useEffect(() => {
-    if (web3Provider && nft && address) {
-      const getTokens = async () => {
-        const tkns: Token[] = [];
-        for (let index = 0; index < 80; index++) {
-          if (await nft.ownerOf(index + 1)) {
-            const tokenUri = await nft.tokenURI(index + 1);
-            const url = `https://ipfs.io/ipfs/${tokenUri.replace(
-              'ipfs://',
-              '',
-            )}`;
-            tkns[index] = (await axios.get<Token>(url)).data;
-            tkns[index].image = `https://ipfs.io/ipfs/${tkns[
-              index
-            ].image.replace('ipfs://', '')}`;
-          }
-        }
-
-        console.log(tkns);
-        return tkns;
-      };
-
-      getTokens().then((response) => {
-        setTokens(response);
-      });
-    }
-  }, [web3Provider, nft, address]);
 
   const onMintClick = async () => {
     if (web3Provider && nft && address) {
@@ -133,6 +87,8 @@ const Home: NextPage = () => {
           toast.error(e);
         }
       });
+    } else {
+      toast.error("You can't mint just yet.");
     }
   };
 
@@ -150,7 +106,7 @@ const Home: NextPage = () => {
         <main className="container mx-auto flex flex-col items-center">
           {web3Provider ? (
             <button type="button" onClick={disconnect!}>
-              Disconnect
+              {address}
             </button>
           ) : (
             <button type="button" onClick={connect!}>
@@ -160,20 +116,9 @@ const Home: NextPage = () => {
           <button type="button" onClick={onMintClick}>
             Mint
           </button>
-          <div className="grid grid-cols-4">
-            {tokens.map((token) => {
-              return (
-                <div className="p-4">
-                  <img
-                    src={token.image}
-                    width={100}
-                    height={100}
-                    key={token.name}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <a className="py-4" href={'/stake'}>
+            Stake
+          </a>
         </main>
         <footer></footer>
       </div>
